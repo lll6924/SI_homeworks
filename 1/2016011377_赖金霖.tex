@@ -1,0 +1,99 @@
+\documentclass{article} 
+\usepackage{ctex}  
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\title{Theory and Methods for Statistical Inference - Homework 1}
+\author{CST65 赖金霖 2016011377}   
+\date{\today}  
+
+\usepackage[a4paper,left=10mm,right=10mm,top=15mm,bottom=15mm]{geometry}  
+\begin{document}
+\maketitle    
+\section{binary communication system}
+\paragraph{(a)}
+The value range of r is $[-\frac{3}{4},\frac{7}{4}]$. 
+The probability-of-error of a detector $\hat{m}(r)$ is
+\begin{align}
+\mathbb{P}(\hat{m}(r)\neq m) &= \mathbb{P}(\hat{m}(r)=0| m=1)\mathbb{P}(m=1)+\mathbb{P}(\hat{m}(r)=1| m=0)\mathbb{P}(m=0) \notag\\
+&= \frac{3}{4}\int^{\frac{7}{4}}_{\frac{1}{4}}\frac{2}{3}\mathbb{I}[\hat{m}(r)=0]dr+\frac{1}{4}\int^{\frac{3}{4}}_{-\frac{3}{4}}\frac{2}{3}\mathbb{I}[\hat{m}(r)=1]dr\notag\\
+&=\frac{1}{2}\int^{\frac{7}{4}}_{\frac{3}{4}}\mathbb{I}[\hat{m}(r)=0]dr+\frac{1}{6}\int^{\frac{1}{4}}_{-\frac{3}{4}}\mathbb{I}[\hat{m}(r)=1]dr+\frac{1}{6}\int^{\frac{3}{4}}_{\frac{1}{4}}(3\mathbb{I}[\hat{m}(r)=0]+\mathbb{I}[\hat{m}(r)=1])dr\notag
+\end{align}
+Obviously, the three elements of the above equation is non-negative and can be considered separately. Therefore, the minimum probability-of-error detector $\hat{m}(r)$ should be 0 in $[-\frac{3}{4},\frac{1}{4}]$ and 1 in $[\frac{3}{4},\frac{7}{4}]$. As for $[\frac{1}{4},\frac{3}{4}]$, we should set $\hat{m}(r)$ to 1 because the coefficient of $\mathbb{I}[\hat{m}(r)=1]$ is three times lower than $\mathbb{I}[\hat{m}(r)=0]$. In this case, $\hat{m}(r)$ satisfies
+\begin{align}
+	\hat{m}(r)=\begin{cases}
+		0 & -\frac{3}{4}\le r\le \frac{1}{4}\\
+		1 & \frac{1}{4}\le r\le \frac{7}{4}
+	\end{cases}\notag
+\end{align}
+The associated probability of error is therefore $\frac{1}{12}$.
+
+\paragraph{(b)}
+If the receiver does not know the prior probabilities and has to use a ML detector, it would compare $p(r|m=0)$ and $p(r|m=1)$, which are
+\begin{align}
+	p(r|m=0)&=\begin{cases}
+		\frac{2}{3} & -\frac{3}{4}\le r\le \frac{3}{4}\\
+		0 & otherwise
+	\end{cases}\notag \\
+	p(r|m=1)&=\begin{cases}
+		\frac{2}{3} & \frac{1}{4}\le r\le \frac{7}{4}\\
+		0 & otherwise
+	\end{cases}\notag
+\end{align}
+In $[-\frac{3}{4},\frac{1}{4}]$, the detector must select 0, while in $[\frac{3}{4},\frac{7}{4}]$, 1 is preferred. In $[\frac{1}{4},\frac{3}{4}]$, we could choose either 0 or 1 for the detector. So there should be infinitely many ML detectors. We can therefore design two different ML detectors, $\hat{m}_1(r)$ and $\hat{m}_2(r)$, which are
+\begin{align}
+	\hat{m}_1(r)&=\begin{cases}
+		0 & -\frac{3}{4}\le r\le \frac{1}{4}\\
+		1 & \frac{1}{4}\le r\le \frac{7}{4}
+	\end{cases}\notag \\
+	\hat{m}_2(r)&=\begin{cases}
+		0 & -\frac{3}{4}\le r\le \frac{3}{4}\\
+		1 & \frac{3}{4}\le r\le \frac{7}{4}
+	\end{cases}\notag
+\end{align}
+From (a), we know that $\mathbb{P}(\hat{m}_1(r)\neq m)$ is $\frac{1}{12}$ and $\mathbb{P}(\hat{m}_2(r)\neq m)$ is $\frac{1}{4}$.
+
+\paragraph{(c)}
+In this discrete case, r can only be in \{-1, 0, 1, 2\}. We can directly calculate the probability-of-error like (a):
+\begin{align}
+\mathbb{P}(\hat{m}(r)\neq m) &= \mathbb{P}(\hat{m}(r)=0| m=1)\mathbb{P}(m=1)+\mathbb{P}(\hat{m}(r)=1| m=0)\mathbb{P}(m=0) \notag\\
+&= \frac{3}{4}(\frac{1}{8}\mathbb{I}[\hat{m}(0)=0]+\frac{3}{4}\mathbb{I}[\hat{m}(1)=0]+\frac{1}{8}\mathbb{I}[\hat{m}(2)=0])+\frac{1}{4}(\frac{1}{8}\mathbb{I}[\hat{m}(-1)=1]+\frac{3}{4}\mathbb{I}[\hat{m}(0)=1]+\frac{1}{8}\mathbb{I}[\hat{m}(1)=1])\notag\\
+&= \frac{1}{32}(3\mathbb{I}[\hat{m}(2)=0]+\mathbb{I}[\hat{m}(-1)=1]+3\mathbb{I}[\hat{m}(0)=0]+6\mathbb{I}[\hat{m}(0)=1]+18\mathbb{I}[\hat{m}(1)=0]+\mathbb{I}[\hat{m}(1)=1])\notag
+\end{align}
+Therefore, $\hat{m}(r)$ should be
+\begin{align}
+	\hat{m}(r)=\begin{cases}
+		0& r=-1,0\\
+		1& r=1,2
+	\end{cases}\notag
+\end{align}
+The associated probability of error is $\frac{1}{8}$.
+
+\section{efficient frontier}
+\paragraph{Proof:}
+We write $P_D$ and $P_F$ as functions of $\eta$:
+\begin{align}
+	P_D(\eta)&=P_{L|H}(l\ge \eta|H=H_1)\notag\\
+	P_F(\eta)&=P_{L|H}(l\ge \eta|H=H_0)\notag
+\end{align}
+where $L$ is the likelihood ratio. Therefore
+\begin{align}
+	\frac{\partial P_F(\eta)}{\partial \eta}&=\frac{\partial}{\partial \eta}\int^{\infty}_{\eta}p_{L|H}(l|H_0)dl\notag\\
+	&=-p_{L|H}(\eta|H_0)\notag\\
+	\frac{\partial P_D(\eta)}{\partial \eta}&=\frac{\partial}{\partial \eta}\int^{\infty}_{\eta}p_{L|H}(l|H_1)dl\notag\\
+	&=-p_{L|H}(\eta|H_1)\notag\\
+	&=-\int_{L(\mathbf{y})=\eta}p_{Y|H}(\mathbf{y}|H_1)dy\notag\\
+	&=-\eta\int_{L(\mathbf{y})=\eta}p_{Y|H}(\mathbf{y}|H_0)dy\notag\\
+	&=-\eta p_{L|H}(\eta|H_0)\notag
+\end{align}
+$P_D$ and $P_F$ form a parametric function on $\eta$, in which
+\begin{align}
+	\frac{\partial P_D}{\partial P_F}&=\frac{\frac{\partial P_D}{\partial \eta}}{\frac{\partial P_F}{\partial \eta}}=\eta
+\end{align}
+(b) has then been proven. To prove (a), we need to show that $\frac{\partial P_D}{\partial P_F}$ will not increase if $P_F$ increases.\\
+For all $\eta_1, \eta_2$ satisfying $0\le \eta_1< \eta_2< \infty$, we have
+\begin{align}
+	P_F(\eta_1)-P_F(\eta_2)&=\int^{\infty}_{\eta_1}p_{L|H}(l|H_0)dl-\int^{\infty}_{\eta_2}p_{L|H}(l|H_0)dl\notag\\
+	&=\int^{\eta_2}_{\eta_1}p_{L|H}(l|H_0)dl\ge 0\notag
+\end{align}
+Consider arbitrary $P_{F_1}$ and $P_{F_2}$ satisfying $0\le P_{F_1} < P_{F_2}\le 1$. If their corresponding parameters are $\eta_1$ and $\eta_2$, then we have $\eta_1\ge \eta_2$, since otherwise $P_F(\eta_1)-P_F(\eta_2)\ge 0$. Taking equation (1) into consideration, we have shown $\frac{\partial P_D}{\partial P_F}$ will not increase if $P_F$ increases.
+\end{document}
