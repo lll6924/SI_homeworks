@@ -2,6 +2,7 @@
 \usepackage{ctex}  
 \usepackage{amsfonts}
 \usepackage{amsmath}
+\usepackage{amssymb}
 \title{Theory and Methods for Statistical Inference - Homework 1}
 \author{CST65 赖金霖 2016011377}   
 \date{\today}  
@@ -96,4 +97,130 @@ For all $\eta_1, \eta_2$ satisfying $0\le \eta_1< \eta_2< \infty$, we have
 	&=\int^{\eta_2}_{\eta_1}p_{L|H}(l|H_0)dl\ge 0\notag
 \end{align}
 Consider arbitrary $P_{F_1}$ and $P_{F_2}$ satisfying $0\le P_{F_1} < P_{F_2}\le 1$. If their corresponding parameters are $\eta_1$ and $\eta_2$, then we have $\eta_1\ge \eta_2$, since otherwise $P_F(\eta_1)-P_F(\eta_2)\ge 0$. Taking equation (1) into consideration, we have shown $\frac{\partial P_D}{\partial P_F}$ will not increase if $P_F$ increases.
+
+\section{minimax test}
+\paragraph{(a)}
+The two posteriors $p_{Y|H}(y|H_0)$ and $p_{Y|H}(y|H_1)$, are formulated as
+\begin{align}
+	p_{Y|H}(y|H_0)&=\frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(y-s_0)^2}{2\sigma^2}}\notag\\
+	p_{Y|H}(y|H_1)&=\frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(y-s_1)^2}{2\sigma^2}}\notag
+\end{align}
+Given priors $1-p$ and $p$, the likelihood ratio and the threshold $\eta$ are
+\begin{align}
+	L(y)&=\frac{p_{Y|H}(y|H_1)}{p_{Y|H}(y|H_0)}\notag\\
+	&=e^{\frac{2(s_1-s_0)y+s_0^2-s_1^2}{2\sigma^2}}\notag\\
+	\eta&=\frac{P_0}{P_1}\frac{C_{10}-C_{00}}{C_{01}-C_{11}}\notag\\
+	&=\frac{1-p}{p}\notag
+\end{align}
+Therefore, the optimal Bayes' decision rule takes the form
+\begin{align}
+	y\mathop{\gtreqless}^{\hat{H}(y)=H_1}_{\hat{H}(y)=H_0}\frac{\sigma^2}{s_1-s_0}\ln\frac{1-p}{p}+\frac{s_0+s_1}{2} = \hat{y}
+\end{align}
+We define the right hand side of the above formula as $\hat{y}$. The cost of such decision is then
+\begin{align}
+	\varphi(\hat{H},p)&=(1-p)\mathbb{E}[C(H,\hat{H}(y))|H=H_0]+p\mathbb{E}[C(H,\hat{H}(y))|H=H_1]\notag\\
+	&=(1-p)\int^{\infty}_{\hat{y}}\frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(y-s_0)^2}{2\sigma^2}}dy+p\int^{\hat{y}}_{-\infty}\frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(y-s_1)^2}{2\sigma^2}}dy\notag
+\end{align}
+Taking equation (2) into consideration, $\frac{\partial \varphi(\hat{H},p)}{\partial p}$ is derived as
+\begin{align}
+	\frac{\partial \varphi(\hat{H},p)}{\partial p}&=-\int_{\hat{y}}^{\infty}\frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(y-s_0)^2}{2\sigma^2}}dy+\frac{\sigma^2}{p(s_1-s_0)}\frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(\hat{y}-s_0)^2}{2\sigma^2}}\notag\\
+	&\quad +\int^{\hat{y}}_{-\infty}\frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(y-s_1)^2}{2\sigma^2}}dy-\frac{\sigma^2}{(1-p)(s_1-s_0)}\frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(\hat{y}-s_1)^2}{2\sigma^2}}\notag\\
+	&=\int^{\hat{y}}_{-\infty}\frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(y-s_1)^2}{2\sigma^2}}dy-\int_{\hat{y}}^{\infty}\frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(y-s_0)^2}{2\sigma^2}}dy+\frac{\sigma^2}{s_1-s_0}(\frac{p_{Y|H}(\hat{y}|H_0)}{P_1}-\frac{p_{Y|H}(\hat{y}|H_1)}{P_0})\notag\\
+	&=\int^{\hat{y}}_{-\infty}\frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(y-s_1)^2}{2\sigma^2}}dy-\int_{\hat{y}}^{\infty}\frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(y-s_0)^2}{2\sigma^2}}dy\notag\\
+	&=\int^{\hat{y}-s_1}_{-\infty}\frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{t^2}{2\sigma^2}}dt-\int^{s_0-\hat{y}}_{-\infty}\frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{t^2}{2\sigma^2}}dt\notag
+\end{align}
+If $p\le \frac{1}{2}$, then $\hat{y}\ge \frac{s_0+s_1}{2}$. Therefore $\frac{\partial \varphi(\hat{H},p)}{\partial p}\ge 0$, indicating that the cost increases as p increases. \\
+If $p\ge \frac{1}{2}$, then $\hat{y}\le \frac{s_0+s_1}{2}$. Therefore $\frac{\partial \varphi(\hat{H},p)}{\partial p}\le 0$, indicating that the cost decreases as p increases.\\
+In conclusion, the least favorable priors are $P_0=P_1=\frac{1}{2}$. The corresponding decision rule $\hat{H}_M(y)$ is
+\begin{align}
+	\hat{H}_M(y)=\begin{cases}
+		H_0&y\le \frac{s_0+s_1}{2}\\
+		H_1&y>\frac{s_0+s_1}{2}
+	\end{cases}\notag
+\end{align}
+
+\paragraph{(b)}
+The cost of the minimax decision rule $\hat{H}_M(y)$ is
+\begin{align}
+	\varphi(\hat{H}_M,p)&=\varphi(\hat{H}_M,\frac{1}{2})\notag\\
+	&=\frac{1}{2}\int^{\infty}_{\frac{s_0+s_1}{2}}\frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(y-s_0)^2}{2\sigma^2}}dy+\frac{1}{2}\int^{\frac{s_0+s_1}{2}}_{-\infty}\frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(y-s_1)^2}{2\sigma^2}}dy\notag\\
+	&=\int^{\frac{s_0-s_1}{2}}_{-\infty}\frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{t^2}{2\sigma^2}}dt\notag
+\end{align}
+The expected cost of the optimum Bayes decision rule $\hat{H}_B(y)$ is
+\begin{align}
+	\varphi(\hat{H}_B,p)&=(1-p)\int^{\infty}_{\hat{y}}\frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(y-s_0)^2}{2\sigma^2}}dy+p\int^{\hat{y}}_{-\infty}\frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(y-s_1)^2}{2\sigma^2}}dy\notag
+\end{align}
+where $\hat{y}$ is given by equation (2). From (a) we already know that $\varphi(\hat{H}_B,p)\le \varphi(\hat{H}_M,\frac{1}{2})=\varphi(\hat{H}_M,p)$.\\
+When $p=(e^2+1)^{-1}$, $s_0=0$, $s_1=2$, $\sigma^2=1$, the two costs are
+\begin{align}
+	\varphi(\hat{H}_M,p)&=\int^{-1}_{-\infty}\frac{1}{\sqrt{2\pi}}e^{-\frac{t^2}{2}}dt\notag\\
+	&\approx 0.1587\notag \\
+	\varphi(\hat{H}_B,p)&=\frac{e^2}{e^2+1}\int^{\infty}_{2}\frac{1}{\sqrt{2\pi}}e^{-\frac{(y-0)^2}{2}}dy+\frac{1}{e^2+1}\int^{2}_{-\infty}\frac{1}{\sqrt{2\pi}}e^{-\frac{(y-2)^2}{2}}dy\notag\\
+	&\approx 0.0797\notag
+\end{align}
+\section{estimation}
+\paragraph{(a)}
+The distribution of y is 
+\begin{align}
+	p_y(y)&=\int^{\infty}_{0}p_x(x)p_{y|x}(y|x)dx\notag\\
+	&=\int^{\infty}_{0}\frac{x}{a}e^{-x(y+\frac{1}{a})}dx\notag\\
+	&=\frac{a}{(ay+1)^2}\notag
+\end{align}
+The Bayes' least-squares estimation of the case is
+\begin{align}
+	\hat{x}_{BLS}(y)&=\mathbb{E}[x|y]\notag\\
+	&=\int^{\infty}_{0}xp_{x|y}(x|y)dx\notag\\
+	&=\int^{\infty}_{0}x\frac{p_{y|x}(y|x)p_x(x)}{p_y(y)}dx\notag\\
+	&=\int^{\infty}_{0}\frac{(ay+1)^2x^2}{a^2}e^{-x(y+\frac{1}{a})}dx\notag\\
+	&=\frac{2a}{ay+1}\notag
+\end{align}
+The bias of the estimation is
+\begin{align}
+	b&=\mathbb{E}[\hat{x}_{BLS}(y)-x]\notag\\
+	&=\int^{\infty}_{0}\int^{\infty}_{0}(\frac{2a}{ay+1}-x)\frac{x}{a}e^{-x(y+\frac{1}{a})}dxdy\notag\\
+	&=\int^{\infty}_{0}0dy=0\notag
+\end{align}
+which is correct since it is a BLS estimator. The expected expectation $\mathbb{E}[\hat{x}_{BLS}(y)-x|y=y]$ of the belief is then 0(the above integration over x has already become 0) and the expected variance of the belief is
+\begin{align}
+	\lambda_{x|y}(y)&=\mathbb{E}[(\hat{x}_{BLS}(y)-x)^2|y=y]\notag\\
+	&=\int^{\infty}_{0}(\frac{2a}{ay+1}-x)^2\frac{(ay+1)^2x}{a^2}e^{-x(y+\frac{1}{a})}dx\notag\\
+	&=\frac{2a^2}{(ay+1)^2}\notag
+\end{align}
+The error variance of the estimator is
+\begin{align}
+	\lambda_{BLS}&=\mathbb{E}[(\hat{x}_{BLS}(y)-x)^2]\notag\\
+	&=\int^{\infty}_{0}\int^{\infty}_{0}(\frac{2a}{ay+1}-x)^2\frac{x}{a}e^{-x(y+\frac{1}{a})}dxdy\notag\\
+	&=\int^{\infty}_{0}\frac{2a^3}{(ay+1)^4}dy\notag\\
+	&=\frac{2a^2}{3}\notag
+\end{align}
+Obviously we can also use $\lambda_{BLS}=\mathbb{E}[\lambda_{x|y}(y)]$ to get the error variance, which shares the last two lines of the above calculation.
+
+\paragraph{(b)}
+The posterior $p_{x|y}(x|y)$ is formulated as
+\begin{align}
+	p_{x|y}(x|y)=\frac{(ay+1)^2x}{a^2}e^{-x(y+\frac{1}{a})}\notag
+\end{align}
+We take the derivative over x, and obtain
+\begin{align}
+	\frac{\partial p_{x|y}(x|y)}{\partial x}=(\frac{(ay+1)^2}{a^2}-\frac{(ay+1)^3x}{a^3})e^{-x(y+\frac{1}{a})}\notag
+\end{align}
+When $x\le \frac{a}{ay+1}$, the partial derivative is non-negative, so the posterior increases as x increases. When $x\ge \frac{a}{ay+1}$, the posterior decreases as x decreases. Therefore, the MAP estimate of x based on observation of y is
+\begin{align}
+	\hat{x}_{MAP}(y)=\frac{a}{ay+1}\notag
+\end{align}
+The bias of the estimator is 
+\begin{align}
+	b&=\mathbb{E}[\hat{x}_{MAP}(y)-x]\notag\\
+	&=\int^{\infty}_{0}\int^{\infty}_{0}(\frac{a}{ay+1}-x)\frac{x}{a}e^{-x(y+\frac{1}{a})}dxdy\notag\\
+	&=-\int^{\infty}_{0}\frac{a^2}{(ay+1)^3}dy\notag\\
+	&=-\frac{a}{2}\notag
+\end{align}
+The error variance for this estimator is then
+\begin{align}
+	\lambda_{MAP}&=\mathbb{E}[(\hat{x}_{MAP}(y)-x-b)^2]\notag\\
+	&=\mathbb{E}[(\frac{a}{ay+1}-x+\frac{a}{2})^2]\notag\\
+	&=\int^{\infty}_{0}\int^{\infty}_{0}(\frac{2a}{ay+1}-x+\frac{a}{2})^2\frac{x}{a}e^{-x(y+\frac{1}{a})}dxdy\notag\\
+	&=\int^{\infty}_{0}\frac{2a^3}{(ay+1)^4}+\frac{a^3}{4(ay+1)^2}dy\notag\\
+	&=\frac{11a^2}{12}\notag
+\end{align}
 \end{document}
