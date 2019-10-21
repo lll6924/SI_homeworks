@@ -1,0 +1,255 @@
+\documentclass{article} 
+\usepackage{ctex}  
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\title{Theory and Methods for Statistical Inference - Homework 2}
+\author{CST65 赖金霖 2016011377}   
+\date{\today}  
+
+\usepackage[a4paper,left=10mm,right=10mm,top=15mm,bottom=15mm]{geometry}  
+\begin{document}
+\maketitle    
+\section{efficient estimator}
+Since components of $\mathbf{y}$ are independent, the distribution of $\mathbf{y}$ and the Fisher information in $\mathbf{y}$ about any parameter $x$ satisfy
+\begin{align}
+	p_{\mathbf{y}}(\mathbf{y};x_1,x_2)&=\prod_{i=1}^N[\frac{1}{\sqrt{2\pi x_2}}e^{-\frac{(y_i-x_1)^2}{2x_2}}]\notag\\
+	J_{\mathbf{y}}(x)&=-\mathbb{E}[\frac{\partial^2}{\partial x^2}\ln p_{\mathbf{y}}(\mathbf{y};x_1,x_2)]\notag\\
+	&=-\mathbb{E}[\frac{\partial^2}{\partial x^2}(\sum_{i=1}^N \ln \frac{1}{\sqrt{2\pi x_2}}e^{-\frac{(y_i-x_1)^2}{2x_2}})]\notag\\
+	&=-\sum_{i=1}^N\mathbb{E}[\frac{\partial^2}{\partial x^2}( \ln \frac{1}{\sqrt{2\pi x_2}}e^{-\frac{(y_i-x_1)^2}{2x_2}})]\notag\\
+	&=\sum_{i=1}^N\mathbb{E}[\frac{\partial^2}{\partial x^2}(\frac{(y_i-x_1)^2}{2x_2}+\ln \sqrt{2\pi x_2})]
+\end{align}
+\paragraph{(a)}
+If $x_1$ is unknown but $x_2$ is known, we make $x$ to be $x_1$ in equation (1) and the Fisher information about $x_1$ is
+\begin{align}
+	J_{\mathbf{y}}(x_1)&=\sum_{i=1}^N\mathbb{E}[\frac{\partial^2}{\partial x_1^2}(\frac{(y_i-x_1)^2}{2x_2}+\ln \sqrt{2\pi x_2})]\notag\\
+	&=\sum_{i=1}^N\mathbb{E}[\frac{1}{x_2}]\notag\\
+	&=\frac{N}{x_2}\notag
+\end{align}
+If an efficient estimator exists, it is the ML estimator. The ML estimator for this case is
+\begin{align}
+	\hat{x}_{ML}(\mathbf{y})&=\mathop{argmax}_{x_1}p_{\mathbf{y}}(\mathbf{y};x_1,x_2)\notag\\
+	&=\mathop{argmax}_{x_1}[(\frac{1}{\sqrt{2\pi x_2}})^Ne^{-\sum_{i=1}^N\frac{(y_i-x_1)^2}{2x_2}}]\notag\\
+	&=\mathop{argmin}_{x_1}\sum_{i=1}^N(y_i-x_1)^2\notag\\
+	&=\frac{\sum_{i=1}^N y_i}{N}\notag\\
+	&=x_1+\frac{x_2}{N}\frac{\sum_{i=1}^N(y_i-x_1)}{x_2}\notag\\
+	&=x_1+\frac{1}{J_{\mathbf{y}}(x_1)}\frac{\partial}{\partial x_1}\ln p_{\mathbf{y}}(\mathbf{y};x_1)\notag
+\end{align}
+Therefore, an efficient estimator exits and it is the ML estimator. The bias $\mathbf{b}$ of this estimator is
+\begin{align}
+	\mathbf{b}&=\mathbb{E}[\frac{\sum_{i=1}^N y_i}{N}-x_1]\notag\\
+	&=\int_{\mathbf{y}}\frac{\sum_{i=1}^N(y_i-x_1)}{N}\prod_{i=1}^N[\frac{1}{\sqrt{2\pi x_2}}e^{-\frac{(y_i-x_1)^2}{2x_2}}]d\mathbf{y}\notag\\
+	&=\sum_{i=1}^N\int_{\mathbf{y}}\frac{y_i-x_1}{N}\prod_{i=1}^N[\frac{1}{\sqrt{2\pi x_2}}e^{-\frac{(y_i-x_1)^2}{2x_2}}]d\mathbf{y}\notag\\
+	&=\sum_{i=1}^N\int_{y_i}\frac{y_i-x_1}{N}\frac{1}{\sqrt{2\pi x_2}}e^{-\frac{(y_i-x_1)^2}{2x_2}}dy_i\notag\\
+	&=0\notag
+\end{align}
+The MSE of this estimator is
+\begin{align}
+	MSE(\hat{x})&=\mathbb{E}[(\frac{\sum_{i=1}^N y_i}{N}-x_1)^2]\notag\\
+	&=\int_{\mathbf{y}}\frac{(\sum_{i=1}^N(y_i-x_1))^2}{N^2}\prod_{i=1}^N[\frac{1}{\sqrt{2\pi x_2}}e^{-\frac{(y_i-x_1)^2}{2x_2}}]d\mathbf{y}\notag\\
+	&=\sum_{i=1}^N\int_{\mathbf{y}}\frac{(y_i-x_1)^2}{N^2}\prod_{i=1}^N[\frac{1}{\sqrt{2\pi x_2}}e^{-\frac{(y_i-x_1)^2}{2x_2}}]d\mathbf{y}+\sum_{i\neq j}\int_{\mathbf{y}}\frac{(y_i-x_1)(y_j-x_1)}{N^2}\prod_{i=1}^N[\frac{1}{\sqrt{2\pi x_2}}e^{-\frac{(y_i-x_1)^2}{2x_2}}]d\mathbf{y}\notag\\
+	&=\sum_{i=1}^N\int_{y_i}\frac{(y_i-x_1)^2}{N^2}\frac{1}{\sqrt{2\pi x_2}}e^{-\frac{(y_i-x_1)^2}{2x_2}}dy_i\notag\\
+	&=\frac{x_2}{N}\notag
+\end{align}
+\paragraph{(b)}
+In this case, by equation (1), the Fisher information about $x_2$ is
+\begin{align}
+	J_{\mathbf{y}}(x_2)&=\sum_{i=1}^N\mathbb{E}[\frac{\partial^2}{\partial x_2^2}(\frac{(y_i-x_1)^2}{2x_2}+\ln \sqrt{2\pi x_2})]\notag\\
+	&=\sum_{i=1}^N\mathbb{E}[\frac{(y_i-x_1)^2}{x_2^3}-\frac{1}{2x_2^2}]\notag\\
+	&=\frac{N}{2x_2^2}\notag
+\end{align}
+The ML estimator of $x_2$ is
+\begin{align}
+	\hat{x}_{ML}(\mathbf{y})&=\mathop{argmax}_{x_2}p_{\mathbf{y}}(\mathbf{y};x_1,x_2)\notag\\
+	&=\mathop{argmax}_{x_2}[(\frac{1}{\sqrt{2\pi x_2}})^Ne^{-\sum_{i=1}^N\frac{(y_i-x_1)^2}{2x_2}}]\notag\\
+	&=\mathop{argmin}_{x_2}[\frac{N}{2}ln (2\pi x_2)+\frac{\sum_{i=1}^N(y_i-x_1)^2}{2x_2}]\notag
+\end{align}
+By taking derivative on $x_2$, we can get the minimizer of the formula inside $argmin$, which is
+\begin{align}
+	\hat{x}_{ML}(\mathbf{y})&=\frac{\sum_{i=1}^N(y_i-x_1)^2}{N}\notag\\
+	&=x_2+\frac{2x_2^2}{N}[-\frac{N}{2x_2}+\frac{\sum_{i=1}^N(y_i-x_1)^2}{2x_2^2}]\notag\\
+	&=x_2+\frac{1}{J_{\mathbf{y}}(x_2)}\frac{\partial}{\partial x_2}\ln p_{\mathbf{y}}(\mathbf{y};x_2)\notag
+\end{align}
+Therefore, an efficient estimator exists and it is the ML estimator. The bias $\mathbf{b}$ is
+\begin{align}
+	\mathbf{b}&=\mathbb{E}[\frac{\sum_{i=1}^N (y_i-x_1)^2}{N}-x_2]\notag\\
+	&=\int_{\mathbf{y}}(\frac{\sum_{i=1}^N (y_i-x_1)^2}{N}-x_2)\prod_{i=1}^N[\frac{1}{\sqrt{2\pi x_2}}e^{-\frac{(y_i-x_1)^2}{2x_2}}]d\mathbf{y}\notag\\
+	&=\sum_{i=1}^N\int_{\mathbf{y_i}}\frac{ (y_i-x_1)^2}{N}\frac{1}{\sqrt{2\pi x_2}}e^{-\frac{(y_i-x_1)^2}{2x_2}}dy_i-x_2\notag\\
+	&=0\notag
+\end{align}
+The MSE of this estimator is
+\begin{align}
+	MSE(\hat{x})&=\mathbb{E}[(\frac{\sum_{i=1}^N (y_i-x_1)^2}{N}-x_2)^2]\notag\\
+	&=\mathbb{E}[\frac{(\sum_{i=1}^N (y_i-x_1)^2)^2}{N^2}]-\mathbb{E}[2x_2\frac{\sum_{i=1}^N (y_i-x_1)^2}{N}]+\mathbb{E}[x_2^2]\notag\\
+	&=\sum_{i=1}^N\mathbb{E}[\frac{(y_i-x_1)^4}{N^2}]+\sum_{i\neq j}\mathbb{E}[\frac{(y_i-x_1)^2(y_j-x_1)^2}{N^2}]-x_2^2\notag\\
+	&=\frac{2x_2^2}{N}\notag
+\end{align}
+\paragraph{(c)}
+If both $x_1$ and $x_2$ are unknown, $x$ is defined as $\mathbf{x}=\begin{pmatrix}
+	x_1\\x_2
+\end{pmatrix}$ and the Fisher information matrix of the case is
+\begin{align}
+	J_{\mathbf{y}}(\mathbf{x})&=\sum_{i=1}^N\mathbb{E}[\frac{\partial^2}{\partial \mathbf{x}^2}(\frac{(y_i-x_1)^2}{2x_2}+\ln \sqrt{2\pi x_2})]\notag\\
+	&=\begin{pmatrix}
+		\frac{N}{x_2}&0\\
+		0&\frac{N}{2x_2^2}
+	\end{pmatrix}\notag
+\end{align}
+The ML estimator of $\mathbf{x}$ is
+\begin{align}
+	\hat{\mathbf{x}}_{ML}(\mathbf{y})&=\mathop{argmax}_{\mathbf{x}}p_{\mathbf{y}}(\mathbf{y};x_1,x_2)\notag\\
+	&=\mathop{argmax}_{\mathbf{x}}[(\frac{1}{\sqrt{2\pi x_2}})^Ne^{-\sum_{i=1}^N\frac{(y_i-x_1)^2}{2x_2}}]\notag\\
+	&=\mathop{argmin}_{\mathbf{x}}[\frac{N}{2}ln (2\pi x_2)+\frac{\sum_{i=1}^N(y_i-x_1)^2}{2x_2}]\notag
+\end{align}
+Note that $\frac{\sum_{i=1}^N(y_i-x_1)^2}{2x_2}$ is always positive. Therefore, $\sum_{i=1}^N(y_i-x_1)^2$ should be as small as possible, which is what we did in (a). Given that $x_1$, we can get the optimal $x_2$ like (b). So the ML estimator of $\mathbf{x}$ is
+\begin{align}
+	\hat{\mathbf{x}}_{ML}(\mathbf{y})&=\begin{pmatrix}
+		\frac{\sum_{i=1}^N y_i}{N}\\
+		\frac{\sum_{i=1}^Ny_i^2}{N}-\frac{(\sum_{i=1}^N y_i)^2}{N^2}
+	\end{pmatrix}\notag\\
+	&\neq \begin{pmatrix}
+		x_1\\x_2
+	\end{pmatrix}+\begin{pmatrix}
+		\frac{x_2}{N}&0\\0&\frac{2x_2^2}{N}
+	\end{pmatrix}\begin{pmatrix}
+		\frac{\sum_{i=1}^N(y_i-x_1)}{x_2}\\
+		-\frac{N}{2x_2}+\frac{\sum_{i=1}^N(y_i-x_1)^2}{2x_2^2}
+	\end{pmatrix}\notag\\
+	&=\mathbf{x}+\frac{1}{J_{\mathbf{y}}(\mathbf{x})}\frac{\partial}{\partial \mathbf{x}}\ln p_{\mathbf{y}}(\mathbf{y};x_1,x_2)\notag
+\end{align}
+An efficient estimator does not exist because the ML estimator is not efficient.
+$\mathbb{E[\hat{\mathbf{x}}_{ML}(\mathbf{y})]}$ is derived as
+\begin{align}
+	\mathbb{E[\hat{\mathbf{x}}_{ML}(\mathbf{y})]}&=\begin{pmatrix}
+		\mathbb{E}[\frac{\sum_{i=1}^N y_i}{N}]\\
+		\mathbb{E}[\frac{\sum_{i=1}^Ny_i^2}{N}-\frac{(\sum_{i=1}^N y_i)^2}{N^2}]
+	\end{pmatrix}\notag\\
+	&=\begin{pmatrix}
+		x_1\\
+		\frac{(N-1)x_2}{N}
+	\end{pmatrix}\notag
+\end{align}
+Since $\hat{x}_{1,ML}(\mathbf{y})$ is the same with (a), $\mathbb{E}[(\hat{x}_{1,ML}(\mathbf{y})-x_1)^2] = \frac{x_2}{N}$.\\
+When $N=2$, the MSE of $\hat{x}_{2,ML}(\mathbf{y})$ is
+\begin{align}
+	MSE(\hat{x}_{2,ML}(\mathbf{y}))&=\mathbb{E}[(\frac{y_1^2+y_2^2}{2}-\frac{(y_1+y_2)^2}{4}-x_2)^2]\notag\\
+	&=\mathbb{E}[(\frac{y_1^2+y_2^2}{4}-\frac{y_1y_2}{2}-x_2)^2]\notag\\
+	&=\mathbb{E}[\frac{y_1^4}{16}+\frac{y_2^4}{16}+\frac{3y_1^2y_2^2}{8}+x_2^2-\frac{y_1^3y_2}{4}-\frac{y_1y_2^3}{4}-\frac{x_2y_1^2}{2}-\frac{x_2y_2^2}{2}+x_2y_1y_2]\notag\\
+	&=\frac{3x_2^2}{4}\notag
+\end{align}
+This is obviously different with (b) in which the MSE would be $x_2^2 $.
+
+\section{parametrization}
+\paragraph{Proof}
+Since the distribution $p_{\mathbf{y}}(\mathbf{y};x)$ is parameterized by x, the ML estimator of x is
+\begin{align}
+	\hat{x}_{ML}(\mathbf{y})=\mathop{argmax}_x p_{\mathbf{y}}(\mathbf{y};x)\notag
+\end{align}
+The same distribution is also parameterized by $\theta$, so the ML estimator of $\theta$ is
+\begin{align}
+	\hat{\theta}_{ML}(\mathbf{y})=\mathop{argmax}_{\theta} p_{\mathbf{y}}(\mathbf{y};\theta)\notag
+\end{align}
+Because the two estimators are ML estimators and the function $g(\cdot)$ connecting parameter $\theta$ and $x$ is invertible, 
+\begin{align}
+	p_{\mathbf{y}}(\mathbf{y};\hat{\theta}_{ML}(\mathbf{y}))&\ge p_{\mathbf{y}}(\mathbf{y};g(\hat{x}_{ML}(\mathbf{y})))\notag\\
+	p_{\mathbf{y}}(\mathbf{y};\hat{x}_{ML}(\mathbf{y}))&\ge p_{\mathbf{y}}(\mathbf{y};g^{-1}(\hat{\theta}_{ML}(\mathbf{y})))\notag\\
+	p_{\mathbf{y}}(\mathbf{y};x)&=p_{\mathbf{y}}(\mathbf{y};g(x))\; for\; any\; x\notag
+\end{align}
+Therefore,
+\begin{align}
+	p_{\mathbf{y}}(\mathbf{y};\hat{\theta}_{ML}(\mathbf{y}))&\ge p_{\mathbf{y}}(\mathbf{y};g(\hat{x}_{ML}(\mathbf{y})))\notag\\
+	&=p_{\mathbf{y}}(\mathbf{y};\hat{x}_{ML}(\mathbf{y}))\notag\\
+	&\ge p_{\mathbf{y}}(\mathbf{y};g^{-1}(\hat{\theta}_{ML}(\mathbf{y})))\notag\\
+	&=p_{\mathbf{y}}(\mathbf{y};\hat{\theta}_{ML}(\mathbf{y}))\notag
+\end{align}
+Because the two sides of the inequations are the same, every $\ge$ is equal. This means
+\begin{align}
+	\hat{\theta}_{ML}(\mathbf{y})=g(\hat{x}_{ML}(\mathbf{y}))\notag
+\end{align}
+Note that we have implied the uniqueness of the ML estimators. If that was not the case, the result would not hold.
+
+\section{alternate estimator}
+\paragraph{(a)}
+Because $\mathbf{t}=\mathbf{t}(\mathbf{y})$ is a sufficient statistic,
+\begin{align}
+	p_{\mathbf{y}|\mathbf{t}}(\mathbf{y}|\mathbf{t};x)=f(\mathbf{y},\mathbf{t})\notag
+\end{align}
+When $\mathbf{y}$ is a discrete variable,
+\begin{align}
+	\hat{x}'(\mathbf{t})&=\mathbb{E}[\hat{x}(\mathbf{y})|\mathbf{t}=\mathbf{t}]\notag\\
+	&=\sum_{\mathbf{y}}\hat{x}(\mathbf{y})p_{\mathbf{y}|\mathbf{t}}(\mathbf{y}|\mathbf{t};x)\notag\\
+	&=\sum_{\mathbf{y}}\hat{x}(\mathbf{y})f(\mathbf{y},\mathbf{t})\notag
+\end{align}
+Therefore, $\hat{x}'(\mathbf{t})$ is a valid estimator.\\
+When $\mathbf{y}$ is a continuous variable,
+\begin{align}
+	\hat{x}'(\mathbf{t})&=\mathbb{E}[\hat{x}(\mathbf{y})|\mathbf{t}=\mathbf{t}]\notag\\
+	&=\int_{\mathbf{y}}\hat{x}(\mathbf{y})p_{\mathbf{y}|\mathbf{t}}(\mathbf{y}|\mathbf{t};x)d\mathbf{y}\notag\\
+	&=\int_{\mathbf{y}}\hat{x}(\mathbf{y})f(\mathbf{y},\mathbf{t})d\mathbf{y}\notag
+\end{align}
+In this case, $\hat{x}'(\mathbf{t})$ is also a valid estimator.
+\paragraph{(b)}
+Because $C(x,\hat{x})$ is convex in $\hat{x}$,
+\begin{align}
+	C(x,\mathbb{E}[\hat{x}(\mathbf{y})|\mathbf{t}=\mathbf{t}])&\le \mathbb{E}[C(x,\hat{x}(\mathbf{y}))|\mathbf{t}=\mathbf{t}]\notag
+\end{align}
+Taking expectation of $\mathbf{t}$ on both sides, we obtain
+\begin{align}
+	\mathbb{E}[C(x,\mathbb{E}[\hat{x}(\mathbf{y})|\mathbf{t}=\mathbf{t}])]&\le \mathbb{E}[\mathbb{E}[C(x,\hat{x}(\mathbf{y}))|\mathbf{t}=\mathbf{t}]]\notag\\
+	&=\mathbb{E}[C(x,\hat{x}(\mathbf{y}))]\notag
+\end{align}
+This means
+\begin{align}
+	\mathbb{E}[C(x,\hat{x}'(\mathbf{t}))]&\le \mathbb{E}[C(x,\hat{x}(\mathbf{y}))]\notag
+\end{align}
+
+\section{binary hypothesis testing}
+\paragraph{Proof}
+We need to show that $H$ is not a parameter of $p_{\mathbf{y}|l}(\mathbf{y}|l;H)$.\\
+Suppose $\mathbf{y}$ is a continuous variable. When $H=H_0$, by Bayes' rule,
+\begin{align}
+	p_{\mathbf{y}|l}(\mathbf{y}|l;H_0)&=\frac{p_{l|\mathbf{y}}(l|\mathbf{y};H_0)p_{\mathbf{y}}(\mathbf{y};H_0)}{p_{l}(l;H_0)}\notag\\
+	&=\frac{p_{l|\mathbf{y}}(l|\mathbf{y};H_0)p_{\mathbf{y}}(\mathbf{y};H_0)}{\int_{L(\mathbf{z})=l}p_{\mathbf{y}}(\mathbf{z};H_0)d\mathbf{z}}\notag
+\end{align}
+When $H=H_1$, by Bayes' rule,
+\begin{align}
+	p_{\mathbf{y}|l}(\mathbf{y}|l;H_1)&=\frac{p_{l|\mathbf{y}}(l|\mathbf{y};H_1)p_{\mathbf{y}}(\mathbf{y};H_1)}{p_{l}(l;H_1)}\notag\\
+	&=\frac{p_{l|\mathbf{y}}(l|\mathbf{y};H_1)p_{\mathbf{y}}(\mathbf{y};H_1)}{\int_{L(\mathbf{z})=l}p_{\mathbf{y}}(\mathbf{z};H_1)d\mathbf{z}}\notag
+\end{align}
+Note that $p_{l|\mathbf{y}}(l|\mathbf{y};H_1)=\mathbb{I}[l=L(\mathbf{y})]$. It does not depend on $H$ and it is non-zero only when $l=L(\mathbf{y})$. In such case,
+\begin{align}
+	p_{\mathbf{y}|l}(\mathbf{y}|l;H_1)&=\frac{p_{l|\mathbf{y}}(l|\mathbf{y};H_1)*l*p_{\mathbf{y}}(\mathbf{y};H_0)}{\int_{L(\mathbf{z})=l}l*p_{\mathbf{y}}(\mathbf{z};H_0)d\mathbf{z}}\notag\\
+	&=\frac{p_{l|\mathbf{y}}(l|\mathbf{y};H_1)p_{\mathbf{y}}(\mathbf{y};H_0)}{\int_{L(\mathbf{z})=l}p_{\mathbf{y}}(\mathbf{z};H_0)d\mathbf{z}}\notag\\
+	&=\frac{p_{l|\mathbf{y}}(l|\mathbf{y};H_0)p_{\mathbf{y}}(\mathbf{y};H_0)}{\int_{L(\mathbf{z})=l}p_{\mathbf{y}}(\mathbf{z};H_0)d\mathbf{z}}\notag\\
+	&=p_{\mathbf{y}|l}(\mathbf{y}|l;H_0)\notag
+\end{align}
+This means $p_{\mathbf{y}|l}(\mathbf{y}|l;H)$ does not depend on $H$.\\
+When $\mathbf{y}$ is a discrete variable, the reasoning is the same after replacing $\int$ with $\sum$.\\
+Therefore, likelihood ratio is a sufficient statistic.
+
+\section{Fisher information}
+\paragraph{Proof}
+Since $\mathbf{t}$ is a sufficient statistic for $x$ given $y$,
+\begin{align}
+	\frac{p_y(y;x)}{p_{\mathbf{t}}(\mathbf{t}(y);x)}=f(y)
+\end{align}
+The Fisher information in $y$ about x is, 
+\begin{align}
+	J_y(x)&=\mathbb{E}[(\frac{\partial}{\partial x}\ln p_y(y;x))^2]\notag\\
+	&=\mathbb{E}[(\frac{\frac{\partial}{\partial x}p_y(y;x)}{p_y(y;x)})^2]\notag
+\end{align}
+If $y$ and $\mathbf{t}$ are continuous variables, introducing equation (2), the Fisher information is then
+\begin{align}
+	J_y(x)&=\mathbb{E}[(\frac{\frac{\partial}{\partial x}p_{\mathbf{t}}(\mathbf{t}(y);x)f(y)}{p_{\mathbf{t}}(\mathbf{t}(y);x)f(y)})^2]\notag\\
+	&=\mathbb{E}[(\frac{\frac{\partial}{\partial x}p_{\mathbf{t}}(\mathbf{t}(y);x)}{p_{\mathbf{t}}(\mathbf{t}(y);x)})^2]\notag\\
+	&=\int_y p_y(y;x)(\frac{\frac{\partial}{\partial x}p_{\mathbf{t}}(\mathbf{t}(y);x)}{p_{\mathbf{t}}(\mathbf{t}(y);x)})^2 dy\notag\\
+	&=\int_{\mathbf{t}}\int_{\mathbf{t}(y)=\mathbf{t}} p_y(y;x)(\frac{\frac{\partial}{\partial x}p_{\mathbf{t}}(\mathbf{t}(y);x)}{p_{\mathbf{t}}(\mathbf{t}(y);x)})^2 dyd\mathbf{t}\notag\\
+	&=\int_{\mathbf{t}}\int_{\mathbf{t}(y)=\mathbf{t}} p_y(y;x)(\frac{\frac{\partial}{\partial x}p_{\mathbf{t}}(\mathbf{t};x)}{p_{\mathbf{t}}(\mathbf{t};x)})^2 dyd\mathbf{t}\notag\\
+	&=\int_{\mathbf{t}}\int_{\mathbf{t}(y)=\mathbf{t}} p_y(y;x)dy(\frac{\frac{\partial}{\partial x}p_{\mathbf{t}}(\mathbf{t};x)}{p_{\mathbf{t}}(\mathbf{t};x)})^2 d\mathbf{t}\notag\\
+	&=\int_{\mathbf{t}}p_{\mathbf{t}}(\mathbf{t};x)(\frac{\frac{\partial}{\partial x}p_{\mathbf{t}}(\mathbf{t};x)}{p_{\mathbf{t}}(\mathbf{t};x)})^2 d\mathbf{t}\notag\\
+	&=\mathbb{E}[(\frac{\frac{\partial}{\partial x}p_{\mathbf{t}}(\mathbf{t};x)}{p_{\mathbf{t}}(\mathbf{t};x)})^2]\notag\\
+	&=J_{\mathbf{t}}(x)\notag
+\end{align}
+When $\mathbf{t}$ or $y$ is a discrete variable, the arguments still hold after replacing $\int$ with $\sum$.\\
+Q.E.D.
+\end{document}
