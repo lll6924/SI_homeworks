@@ -1,0 +1,220 @@
+\documentclass{article} 
+\usepackage{ctex}  
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathrsfs}
+\usepackage{amsthm}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=newest}
+\usetikzlibrary{calc}
+
+\title{Theory and Methods for Statistical Inference - Homework 3}
+\author{CST65 赖金霖 2016011377}   
+\date{\today}  
+\usepackage[a4paper,left=10mm,right=10mm,top=15mm,bottom=15mm]{geometry}  
+\tikzset{elegant/.style={smooth, black, thick, samples=101}}
+\begin{document}
+\maketitle    
+\section{cost function}
+\paragraph{a}
+
+The expectation of the cost function given $y$ is
+\begin{align}
+	\mathbb{E}[C(x,q_x)|y=y]&=\sum_{x}[A\sum_a(q(a)-\mathbb{I}_x(a))^2p(x|y)]+A\sum_x B(x)p(x|y)\notag
+\end{align}
+The minimizer of the above expression only depends on the first item, which is
+\begin{align}
+	\sum_{x}[A\sum_a(q(a)-\mathbb{I}_x(a))^2p(x|y)]&=\sum_{x}[A\sum_{a\neq x}q^2(a)p(x|y)+A(q(x)-1)^2p(x|y)]\notag\\
+	&=A\sum_{x}\sum_{a\neq x}q^2(a)p(x|y)+A\sum_{x}(q(x)-1)^2p(x|y)\notag\\
+	&=A\sum_{a}\sum_{x\neq a}q^2(a)p(x|y)+A\sum_{x}(q(x)-1)^2p(x|y)\notag\\
+	&=A\sum_{a}q^2(a)(1-p(a|y))+A\sum_{x}(q(x)-1)^2p(x|y)\notag\\
+	&=A\sum_{x}q(x)(q(x)-2p(x|y))+A\notag
+\end{align}
+Suppose the set of $x$ is ${x_1,x_2,...,x_l}$, and the we denote $q(x_i)$ by $q_i$, $p(x_i|y)$ by $p_i$. We need to find $q_1,q_2,...,q_l$ which minimize
+\begin{align}
+	f(q_1,q_2,...,q_l)=A\sum_{i}q_i(q_i-2p_i)\notag
+\end{align}
+If we do not take the restriction $\sum_{i}q_i=1$ into account, by taking derivative, the minimizer of $f(q_1,q_2,...,q_l)$ should satisfy $q_i=p_i,\ for\ any\ i$. Add the restriction to the problem, the minimizer do not change.
+Therefore, the quadratic cost function is proper.
+\paragraph{b}
+
+Proof:\\
+The choice of $p(x|y)$ is arbitrary, so we simply consider the case that $x\in \{x_1,x_2\}$ and $p(x_1|y)=0.4, p(x_2|y)=0.6$.\\
+If we denote $q(x_1)$ by $a(0\le a \le 1)$, the minimizer of the expectation of cost function given $y$ is
+\begin{align}
+	\mathop{argmin}_{a}\mathbb{E}[C(x,q_x)|y=y]&=\mathop{argmin}_{a}(-0.4a-0.6(1-a))\notag\\
+	&=\mathop{argmin}_{a}(0.2a-0.6)\notag\\
+	&=0\notag
+\end{align}
+In such case, $q(x_1)=0, q(x_2)=1$. Therefore, $C(x,q)=-q(x)$ is not proper.
+\section{data processing inequality}
+\paragraph{a}
+Proof:\\
+The right hand side of the chain rule is
+\begin{align}
+	J_{y}(x)+J_{z|y}(x)&=-\mathbb{E}[\frac{\partial^2\log p_{y}(y;x)}{\partial x^2}]-\mathbb{E}[\frac{\partial^2\log p_{z|y}(z|y;x)}{\partial x^2}]\notag\\
+	&=-\sum_{y}p_{y}(y;x)\frac{\partial^2\log p_{y}(y;x)}{\partial x^2}-\sum_{y,z}p_{y,z}(y,z;x)\frac{\partial^2\log p_{z|y}(z|y;x)}{\partial x^2}\notag\\
+	&=-\sum_{y,z}p_{y,z}(y,z;x)\frac{\partial^2\log p_{y}(y;x)}{\partial x^2}-\sum_{y,z}p_{y,z}(y,z;x)\frac{\partial^2\log p_{z|y}(z|y;x)}{\partial x^2}\notag\\
+	&=-\sum_{y,z}p_{y,z}(y,z;x)\frac{\partial^2[\log p_{y}(y;x)+\log p_{z|y}(z|y;x)]}{\partial x^2}\notag\\
+	&=-\sum_{y,z}p_{y,z}(y,z;x)\frac{\partial^2\log p_{y,z}(y,z;x)}{\partial x^2}\notag\\
+	&=J_{y,z}(x)\notag
+\end{align}
+\paragraph{b}
+Proof:
+By the chain rule for Fisher information,
+\begin{align}
+	J_{w,z}(x)&=J_{w}(x)+J_{z|w}(x)\notag
+\end{align}
+Since $w$ is deterministic on $z$, $J_{w,z}(x)=J_{z}(x)$. Also, Fisher information is always non-negative. Therefore
+\begin{align}
+	J_{w}(x)&=J_{w,z}(x)-J_{z|w}(x)\notag\\
+	&=J_{z}(x)-J_{z|w}(x)\notag\\
+	&\le J_{z}(x)\notag
+\end{align}
+\section{distribution family}
+\pgfmathdeclarefunction{SolutionX}{1}{
+    \pgfmathparse{5-5/2*(4*exp(2*\t)/(1+exp(\t)+4*exp(2*\t)))-5*(1/(1+exp(\t)+4*exp(2*\t)))}
+}
+\pgfmathdeclarefunction{SolutionY}{1}{
+    \pgfmathparse{5/2*1.732*(4*exp(2*\t)/(1+exp(\t)+4*exp(2*\t)))}
+}
+\begin{center}
+	\begin{tikzpicture}
+		\coordinate (C) at (0,0);
+		\coordinate (q) at (2.5,2.887);
+		\coordinate (p) at (1.25,0.7217);
+		\draw[thick](0,0) -- (5,0);
+		\draw[thick](0,0) -- (2.5,4.33);
+		\draw[thick](5,0) -- (2.5,4.33);
+		\draw[very thick](0.625,1.0825)--(2.5,0);
+		\draw (0,0) node[below] {(1,0,0)};
+		\draw (5,0) node[below] {(0,1,0)};
+		\draw (2.5,0) node[below] {($\frac{1}{2}$,$\frac{1}{2}$,0)};
+		\draw (0.625,1.0825) node[above,xshift=-13] {($\frac{3}{4}$,0,$\frac{1}{4}$)};
+		\draw (2.5,4.33) node[above] {(0,0,1)};
+		\fill[black](C) circle (0.08);
+		\draw (C) node[above, xshift=-10]{$\mathcal{L}_0$};
+		\draw (1.5625,0.54125) node [xshift=12,yshift=1]{$\mathcal{L}_1$};
+		\draw (2,1.732) node [xshift=8]{$\mathcal{E}$};
+		\fill[black](q) circle (0.08);
+		\draw (q) node[left]{$q$};
+		\fill[black](p) circle (0.08);
+		\draw (p) node[above]{$p^*$};
+		\begin{axis}[xmin=0,xmax=5,ymin=0,ymax=5,axis x line=none,axis y line=none,
+					width=5cm, height=5cm, scale=1.46]
+		\addplot[elegant,variable=\t, domain=-10:10]({SolutionX(\t)},{SolutionY(\t)});
+		\end{axis}
+	\end{tikzpicture}
+\end{center}
+\paragraph{a}
+The linear family corresponding to $\mathbb{E}[y]=0$ only contains one point $(1,0,0)$, which is marked on the above graph.
+\paragraph{b}
+Suppose a distribution in the family is $(a,b,c)$, then 
+\begin{align}
+	a+b+c&=1\notag\\
+	b+2c&=\frac{1}{2}\notag
+\end{align}
+It is a line connecting $(\frac{3}{4},0,\frac{1}{4})$ and $(\frac{1}{2},\frac{1}{2},0)$ and is drawn on the above graph.
+\paragraph{c}
+The exponential family $\mathcal{E}$ that passes through q and is orthogonal to $\mathcal{L}_{\frac{1}{2}}$ is 
+\begin{align}
+	\{(\frac{1}{1+e^x+4e^{2x}},\frac{e^x}{1+e^x+4e^{2x}},\frac{4e^{2x}}{1+e^x+4e^{2x}})|x\in R\}\notag
+\end{align}
+After replacing $e^x$ with $t$, the set becomes
+\begin{align}
+	\{(\frac{1}{1+t+4t^2},\frac{t}{1+t+4t^2},\frac{4t^2}{1+t+4t^2})|t\ge 0\}\notag
+\end{align}
+The parametric function is drawn on the graph last page.
+\paragraph{d}
+We only need to calculate the intersection of $\mathcal{E}$ and $\mathcal{L}_1$, which satisfies
+\begin{align}
+		a+b+c&=1\notag\\
+	b+2c&=\frac{1}{2}\notag\\
+	a:b:c&=1:t:4t^2\notag
+\end{align}
+Therefore, $p^*=(\frac{2}{3},\frac{1}{6},\frac{1}{6})$ and is drawn on the graph last page.
+\paragraph{e}
+\begin{center}
+	\begin{tikzpicture}
+		\coordinate (q) at (2.5,2.887);
+		\coordinate (p) at (1.25,0.7217);
+		\draw[thick](0,0) -- (5,0);
+		\draw[thick](0,0) -- (2.5,4.33);
+		\draw[thick](5,0) -- (2.5,4.33);
+		\draw[very thick](0.625,1.0825)--(2.5,0);
+		\draw (0,0) node[below] {(1,0,0)};
+		\draw (5,0) node[below] {(0,1,0)};
+		\draw (2.5,0) node[below] {($\frac{1}{2}$,$\frac{1}{2}$,0)};
+		\draw (0.625,1.0825) node[above,xshift=-13] {($\frac{3}{4}$,0,$\frac{1}{4}$)};
+		\draw (2.5,4.33) node[above] {(0,0,1)};
+		\draw (1.5625,0.54125) node [xshift=12,yshift=1]{$\mathcal{L}_1$};
+		\fill[black](q) circle (0.08);
+		\draw (q) node[left]{$q$};
+		\begin{scope}
+			\foreach \x in {0,0.2,0.4,0.6}
+			\draw[overlay, xshift=\x cm]  (0,0)--(0,\x*1.732);
+			\foreach \x in {0.8,1.0,1.2,1.4,1.6,1.8,2.0,2.2,2.4}
+			\draw[overlay, xshift=\x cm]  (0,0)--(0,1.443-\x/1.732);
+		\end{scope}
+		\begin{axis}[xmin=0,xmax=5,ymin=0,ymax=5,axis x line=none,axis y line=none,
+					width=5cm, height=5cm, scale=1.46]
+			\addplot[elegant,variable=\t, domain=-10:10]({SolutionX(\t)},{SolutionY(\t)});
+		\end{axis}
+		\draw (2,1.732) node [xshift=8]{$\mathcal{E}$};
+		\fill[black](p) circle (0.08);
+		\draw (p) node[above]{$p^*$};
+	\end{tikzpicture}
+\end{center}
+The area of $\mathcal{P}$ is the shaded area below $\mathcal{L}_1$(inclusive) on the above graph.
+\paragraph{f}
+For any distribution in $\mathcal{P}$, it must belong to a linear family $\mathcal{L}_k=\{p:\mathbb{E}_p[y]=k\},\ 0\le k\le \frac{1}{2}$. \\
+For any such linear family, the I-projection of $q$ is its intersection with $\mathcal{E}$(since we only change $k$).\\
+Therefore, $p^*$ must belong to $\mathcal{E}$. In this area, we know that $0\le t \le \frac{1}{4}$ and we denote the distribution corresponding to $t$ by $p_t$. \\
+Define $s=g(t)=\frac{t+8t^2}{1+t+4t^2}$, which represents the linear family that $p_t$ belong to. The first order derivative of $g(t)$ is
+\begin{align}
+	\frac{\partial g}{\partial t}&=\frac{(16t+1)(4t^2+t+1)-(8t+1)(8t^2+t)}{(1+t+4t^2)^2}\notag\\
+	&=\frac{4t^2+16t+1}{(1+t+4t^2)^2}\notag
+\end{align}
+$g(t)$ is a strictly increasing function in $0\le t \le \frac{1}{4}$ so its inverse function $g^{-1}(s)$ exists. Define $p'_s=p_{g^{-1}(s)}$. We show that $D(p'_s||q)$ is convex in $s$.\\
+For any $s_1,s_2$ in $[0,\frac{1}{2}]$, $\lambda$ in $[0,1]$, since $D(\cdot||q)$ is convex, 
+\begin{align}
+	\lambda D(p'_{s_1}||q)+(1-\lambda)D(p'_{s_2}||q)&\ge D(\lambda p'_{s_1}+(1-\lambda)p'_{s_2}||q)\notag\\
+	&\ge D(p'_{\lambda s_1+(1-\lambda)s_2}||q)\notag
+\end{align}
+The second inequation is because $\lambda p'_{s_1}+(1-\lambda)p'_{s_2}$ and $p'_{\lambda s_1+(1-\lambda)s_2}$ are in the same linear family and the latter is in $\mathcal{E}$. So $D(p'_s||q)$ is convex in $s$. Now we compute $\frac{\partial D(p_t||q)}{\partial t}(\frac{1}{4})$.
+\begin{align}
+	D(p_t||q)&=\frac{1}{1+t+4t^2}\log \frac{6}{1+t+4t^2}+\frac{t}{1+t+4t^2}\log \frac{6t}{1+t+4t^2}+\frac{4t^2}{1+t+4t^2}\log \frac{6t^2}{1+t+4t^2}\notag\\
+	\frac{\partial D(p_t||q)}{\partial t}&=\frac{-8t-1}{1+t+4t^2}(1+\log \frac{6}{1+t+4t^2})+\frac{-4t^2+1}{1+t+4t^2}(1+\log \frac{6t}{1+t+4t^2})+\frac{4t^2+8t}{1+t+4t^2}(1+\log \frac{6t^2}{1+t+4t^2})\notag\\
+	\frac{\partial D(p_t||q)}{\partial t}(\frac{1}{4})&=-2(1+\log 4)+\frac{1}{2}+\frac{3}{2}(1-\log 4)\notag \\
+	&=-\frac{7}{2}\log 4<0\notag
+\end{align} 
+Therefore, there exists $\theta>0$ that $\frac{1}{4}$ is the unique minimizer of $D(p_t||q)$ in $[\frac{1}{4}-\theta,\frac{1}{4}]$. So $\frac{1}{2}$ is the unique minimizer of $D(p'_s||q)$ in $[g(\frac{1}{4}-\theta),\frac{1}{2}]$, which means $\frac{\partial D(p'_s||q)}{\partial s}(\frac{1}{2})\le 0$. Since $D(p'_s||q)$ is convex in $s$, $\frac{1}{2}$ is the minimizer of $D(p'_s||q)$ in $[0,\frac{1}{2}]$. The I-projection of $q$ onto $\mathcal{P}$ is exactly the $p^*$ in $\mathbf{e}$, pointed on the graph.
+\section{EM algorithm}
+\paragraph{a}
+The expression for the function is
+\begin{align}
+	U(\mathbf{x},\mathbf{x}')&=\mathbb{E}[\log p_{\mathbf{z}}(\mathbf{z};\mathbf{x})|y_1=y_1,y_2=y_2;\mathbf{x}']\notag\\
+	&=\int p_{\mathbf{z}|y_1,y_2}(\mathbf{z}|y_1,y_2;\mathbf{x}')\log p_{\mathbf{z}}(\mathbf{z};\mathbf{x})dw\notag\\
+	&=\int p_{\mathbf{z}|y_1,y_2}(\mathbf{z}|y_1,y_2;\mathbf{x}')(\log p_{w}(w;\mathbf{x})+\log p_{y_1|w}(y_1|w;\mathbf{x})+\log p_{y_2|w}(y_2|w;\mathbf{x}))dw\notag\\
+	&=\int p_{\mathbf{z}|y_1,y_2}(\mathbf{z}|y_1,y_2;\mathbf{x}')(-\log \sqrt{2\pi}-\frac{(w-\mu)^2}{2}-\log \sqrt{2\pi}\sigma_1-\frac{(y_1-w)^2}{2\sigma_1^2}-\log \sqrt{2\pi}\sigma_2-\frac{(y_2-w)^2}{2\sigma_2^2})dw\notag\\
+	&=(\mu+\frac{y_1}{\sigma_1^2}+\frac{y_2}{\sigma_2^2})\alpha(\mathbf{x}')-(\frac{1}{2}+\frac{1}{2\sigma_1^2}+\frac{1}{2\sigma_2^2})(\alpha^2(\mathbf{x}')+\beta(\mathbf{x}'))\\
+	&\quad-\frac{\mu^2}{2}-\frac{y_1^2}{2\sigma^2_1}-\frac{y_2^2}{2\sigma^2_2}-\log \sqrt{2\pi}\sigma_1-\log \sqrt{2\pi}\sigma_2-\log \sqrt{2\pi}\notag
+\end{align}
+\paragraph{b}
+We find that $\mu, \sigma_1^2, \sigma_2^2$ can be optimized separately. 
+\begin{align}
+	\mathop{argmax}_{\mu}U(\mathbf{x},\mathbf{x}')&=\mathop{argmax}_{\mu}(\mu\alpha(\mathbf{x}')-\frac{\mu^2}{2})\notag\\
+	&=\alpha(\mathbf{x}')\notag\\
+	\mathop{argmax}_{\sigma_1^2}U(\mathbf{x},\mathbf{x}')&=\mathop{argmax}_{\sigma_1^2}[\frac{1}{\sigma_1^2}(y_1\alpha(\mathbf{x}')-\frac{\alpha^2(\mathbf{x}')}{2}-\frac{\beta(\mathbf{x}')}{2}-\frac{y_1^2}{2})-\log\sigma_1]\notag\\
+	&=\beta(\mathbf{x}')+(y_1-\alpha(\mathbf{x}'))^2\notag\\
+	\mathop{argmax}_{\sigma_1^2}U(\mathbf{x},\mathbf{x}')&=\beta(\mathbf{x}')+(y_2-\alpha(\mathbf{x}'))^2\notag\\
+	\hat{\mathbf{x}}=\mathop{argmax}_{\mathbf{x}}U(\mathbf{x},\mathbf{x}')&=(\alpha(\mathbf{x}'),\beta(\mathbf{x}')+(y_1-\alpha(\mathbf{x}'))^2,\beta(\mathbf{x}')+(y_2-\alpha(\mathbf{x}'))^2)
+\end{align}
+\paragraph{c}
+Starting from the initial guess $\hat{\mathbf{x}}^{(0)}$, E-step and M-step are executed iteratively. \\
+At the $l$-th iteration, we have already known $\hat{\mathbf{x}}^{(l-1)}$. \\
+E-step: We can compute $\alpha(\hat{\mathbf{x}}^{(l-1)})$ and $\beta(\hat{\mathbf{x}}^{(l-1)})$. So the expectation is $(\mu+\frac{y_1}{\sigma_1^2}+\frac{y_2}{\sigma_2^2})\alpha(\hat{\mathbf{x}}^{(l-1)})-(\frac{1}{2}+\frac{1}{2\sigma_1^2}+\frac{1}{2\sigma_2^2})(\alpha^2(\hat{\mathbf{x}}^{(l-1)})+\beta(\hat{\mathbf{x}}^{(l-1)}))-\frac{\mu^2}{2}-\frac{y_1^2}{2\sigma^2_1}-\frac{y_2^2}{2\sigma^2_2}-\log \sqrt{2\pi}\sigma_1-\log \sqrt{2\pi}\sigma_2-\log \sqrt{2\pi}$.\\
+M-step: Find the next parameter $\hat{\mathbf{x}}^{(l)}$ which is $(\alpha(\hat{\mathbf{x}}^{(l-1)}),\beta(\hat{\mathbf{x}}^{(l-1)})+(y_1-\alpha(\hat{\mathbf{x}}^{(l-1)}))^2,\beta(\hat{\mathbf{x}}^{(l-1)})+(y_2-\alpha(\hat{\mathbf{x}}^{(l-1)}))^2)$.
+\end{document}
